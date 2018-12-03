@@ -35,7 +35,7 @@ public class BakerWidgetProvider extends AppWidgetProvider {
 
     public static void setCurrentRecipeIndex(int recipeIndex) {
         currentRecipeIndex = recipeIndex;
-        Log.d(LOG_TAG, "Recipe index is now: "+currentRecipeIndex);
+        Log.d(LOG_TAG, "Recipe index is now:- "+currentRecipeIndex);
     }
 
 
