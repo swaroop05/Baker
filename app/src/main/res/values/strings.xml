@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Baker</string>
+    <string name="no_internet">No Internet Connection</string>
+    <string name="no_baking_info_found">No Baking Recipes Found</string>
+    <string name="ingredients_title">Ingredients</string>
+    <string name="steps_title">Steps</string>
+    <string name="instructions_title">Instructions</string>
+    <string name="previous_step">Previous</string>
+    <string name="next_step">Next</string>
+    <string name="appwidget_text">Recipes</string>
+    <string name="add_widget">Add widget</string>
+</resources>
