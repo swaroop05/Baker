@@ -2,7 +2,9 @@ package com.example.android.baker;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
 import static com.example.android.baker.DetailsActivity.KEY_STEP_DESC;
@@ -54,6 +56,13 @@ public class RecipeStepActivity extends AppCompatActivity {
                 .commit();
 
         }
+    }
+
+    public void replaceFragment(Fragment newFragment, @IdRes int containerId, String TAG, Fragment oldFragment) {
+        getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
+                .replace(containerId, newFragment, TAG)
+                .commit();
     }
 
 
