@@ -17,6 +17,9 @@ import com.example.android.baker.data.BakingSteps;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.example.android.baker.RecipeListFragment.KEY_INGREDIENTS_OF_SINGLE_RECIPE;
 import static com.example.android.baker.RecipeListFragment.KEY_RECIPE_ID;
 import static com.example.android.baker.RecipeListFragment.KEY_RECIPE_NAME;
@@ -27,10 +30,16 @@ import static com.example.android.baker.RecipeListFragment.KEY_RECIPE_NAME;
 
 public class RecipeFragment extends Fragment {
     private static final String LOG_TAG = RecipeFragment.class.getName();
-    private TextView mIngredientsInfoTextView;
+
+    @BindView(R.id.tv_ingredients_info)
+    TextView mIngredientsInfoTextView;
+
+    @BindView(R.id.rv_steps)
+    RecyclerView mStepsRecyclerView;
+
     private static String mRecipeName;
     private static String mIngredientsDetails;
-    private RecyclerView mStepsRecyclerView;
+
     private List<BakingSteps> mBakingSteps;
     private static List<BakingSteps> sBakingSteps;
     private static int mRecipeId;
@@ -42,6 +51,7 @@ public class RecipeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_recipe, container, false);
+        ButterKnife.bind(this, rootView);
         if (savedInstanceState != null) {
             mRecipeName = savedInstanceState.getString(KEY_RECIPE_NAME);
             mIngredientsDetails = savedInstanceState.getString(KEY_INGREDIENTS_OF_SINGLE_RECIPE);
@@ -59,9 +69,9 @@ public class RecipeFragment extends Fragment {
         mBakingSteps = RecipeListFragment.getStepsDetailsOfRecipe(mRecipeId);
         sBakingSteps = mBakingSteps;
 
-        mIngredientsInfoTextView = rootView.findViewById(R.id.tv_ingredients_info);
+       // mIngredientsInfoTextView = rootView.findViewById(R.id.tv_ingredients_info);
         mIngredientsInfoTextView.setText(mIngredientsDetails);
-        mStepsRecyclerView = rootView.findViewById(R.id.rv_steps);
+       // mStepsRecyclerView = rootView.findViewById(R.id.rv_steps);
         updateStepsInUI(mBakingSteps);
         return rootView;
     }

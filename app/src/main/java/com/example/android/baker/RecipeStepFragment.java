@@ -35,6 +35,9 @@ import com.google.android.exoplayer2.util.Util;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.example.android.baker.DetailsActivity.KEY_STEP_DESC;
 import static com.example.android.baker.DetailsActivity.KEY_STEP_ID;
 import static com.example.android.baker.DetailsActivity.KEY_STEP_VIDEO_URL;
@@ -52,11 +55,25 @@ public class RecipeStepFragment extends Fragment {
     private int mStepId;
     private int mRecipeId;
     private String mStepVideoUrl;
-    private TextView mStepDescriptionTextView;
-    private Button mPreviousStepBtn;
-    private Button mNextStepBtn;
-    private TextView mStepsHeader;
-    private SimpleExoPlayerView mPlayerView;
+
+    @Nullable
+    @BindView(R.id.tv_steps_desc)
+    TextView mStepDescriptionTextView;
+
+    @Nullable
+    @BindView(R.id.btn_previous_step_navigation)
+    Button mPreviousStepBtn;
+
+    @Nullable
+    @BindView(R.id.btn_next_step_navigation)
+    Button mNextStepBtn;
+
+    /*//@BindView(R.id.tv_steps_title)
+    TextView mStepsHeader;*/
+
+    @BindView(R.id.video_view)
+    SimpleExoPlayerView mPlayerView;
+
     private SimpleExoPlayer mExoPlayer;
     private List<BakingSteps> mBakingSteps;
     private long seekPosition = -1;
@@ -67,6 +84,7 @@ public class RecipeStepFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View rootView;
+
         isTablet = getResources().getBoolean(R.bool.isTablet);
         if (savedInstanceState != null) {
             mStepDesc = savedInstanceState.getString(KEY_STEP_DESC);
@@ -90,12 +108,14 @@ public class RecipeStepFragment extends Fragment {
 
         if (isLandscape() && !isTablet){
             rootView = inflater.inflate(R.layout.fragment_recipe_step_land, container, false);
+            ButterKnife.bind(this, rootView);
         } else {
             rootView = inflater.inflate(R.layout.fragment_recipe_step, container, false);
-            mStepDescriptionTextView = rootView.findViewById(R.id.tv_steps_desc);
-            mPreviousStepBtn = rootView.findViewById(R.id.btn_previous_step_navigation);
-            mNextStepBtn = rootView.findViewById(R.id.btn_next_step_navigation);
-            mStepsHeader = rootView.findViewById(R.id.tv_steps_title);
+            ButterKnife.bind(this, rootView);
+           //mStepDescriptionTextView = rootView.findViewById(R.id.tv_steps_desc);
+          // mPreviousStepBtn = rootView.findViewById(R.id.btn_previous_step_navigation);
+         //  mNextStepBtn = rootView.findViewById(R.id.btn_next_step_navigation);
+         //  mStepsHeader = rootView.findViewById(R.id.tv_steps_title);
             mPreviousStepBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -129,7 +149,7 @@ public class RecipeStepFragment extends Fragment {
             });
         }
 
-        mPlayerView = rootView.findViewById(R.id.video_view);
+      // mPlayerView = rootView.findViewById(R.id.video_view);
         updateUi ();
         return rootView;
     }

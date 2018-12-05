@@ -28,6 +28,8 @@ import com.example.android.baker.data.QueryUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 
 /**
@@ -36,10 +38,19 @@ import java.util.List;
 
 public class RecipeListFragment extends Fragment implements BakingRecipeNamesAdapter.RecipeNameItemClickListener {
     private static final String LOG_TAG = RecipeListFragment.class.getName();
-    private TextView mEmptyStateTextView;
-    private TextView noInternetTextView;
-    private ProgressBar mProgressBar;
-    private RecyclerView mBakingRecipeNamesRecyclerView;
+
+    @BindView(R.id.empty_view)
+    TextView mEmptyStateTextView;
+
+    @BindView(R.id.rv_recipe_names)
+    RecyclerView mBakingRecipeNamesRecyclerView;
+
+    @BindView(R.id.no_internet)
+    TextView noInternetTextView;
+
+    @BindView(R.id.loading_spinner)
+    ProgressBar mProgressBar;
+
     private static Parcelable STATE = null;
     private List<Baking> mBakingInfos;
     private static  List<Baking> BAKING_INFO_MASTER;
@@ -58,10 +69,11 @@ public class RecipeListFragment extends Fragment implements BakingRecipeNamesAda
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_recipe_list, container, false);
-        mEmptyStateTextView = rootView.findViewById(R.id.empty_view);
-        mProgressBar = rootView.findViewById(R.id.loading_spinner);
-        noInternetTextView = rootView.findViewById(R.id.no_internet);
-        mBakingRecipeNamesRecyclerView = rootView.findViewById(R.id.rv_recipe_names);
+        ButterKnife.bind(this, rootView);
+        //mEmptyStateTextView = rootView.findViewById(R.id.empty_view);
+       // mProgressBar = rootView.findViewById(R.id.loading_spinner);
+       // noInternetTextView = rootView.findViewById(R.id.no_internet);
+        //mBakingRecipeNamesRecyclerView = rootView.findViewById(R.id.rv_recipe_names);
         mProgressBar.setVisibility(View.GONE);
         isTablet = getResources().getBoolean(R.bool.isTablet);
         if (isNetworkConnected()) {
