@@ -189,8 +189,11 @@ public class RecipeStepFragment extends Fragment {
     }
 
     private void replaceFragment(Fragment fragment) {
+
         if (getActivity() instanceof RecipeStepActivity) {
             ((RecipeStepActivity) getActivity()).replaceFragment(fragment, R.id.step_and_video_container_fragment, RecipeStepFragment.LOG_TAG, this);
+        }else if (getActivity() instanceof DetailsActivity){
+            ((DetailsActivity) getActivity()).replaceFragment(fragment, R.id.step_and_video_container_fragment, RecipeStepFragment.LOG_TAG, this);
         }
     }
     public static RecipeStepFragment newInstance(Bundle bundle) {
