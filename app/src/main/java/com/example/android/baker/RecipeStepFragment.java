@@ -213,20 +213,28 @@ public class RecipeStepFragment extends Fragment {
             releasePlayer();
         }
         if (!mStepVideoUrl.isEmpty() ){
-            mStepImageView.setVisibility(View.GONE);
+            if (!isLandscape()){
+                mStepImageView.setVisibility(View.GONE);
+            }
+
             mPlayerView.setVisibility(View.VISIBLE);
             initializePlayer(Uri.parse(mStepVideoUrl));
         }else if (!mStepImageUrl.isEmpty()){
             if (mStepImageUrl.contains(".mp4")){
-                mStepImageView.setVisibility(View.GONE);
+                if (!isLandscape()){
+                    mStepImageView.setVisibility(View.GONE);
+                }
                 mPlayerView.setVisibility(View.VISIBLE);
                 initializePlayer(Uri.parse(mStepImageUrl));
             }else {
-                mPlayerView.setVisibility(View.GONE);
-                mStepImageView.setVisibility(View.VISIBLE);
-                Picasso.with(getContext())
-                        .load(mStepImageUrl)
-                        .into(mStepImageView);
+                if (!isLandscape()){
+                    mPlayerView.setVisibility(View.GONE);
+                    mStepImageView.setVisibility(View.VISIBLE);
+                    Picasso.with(getContext())
+                            .load(mStepImageUrl)
+                            .into(mStepImageView);
+                }
+
             }
 
 
