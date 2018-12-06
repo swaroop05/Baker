@@ -23,7 +23,7 @@ public class BakingRecipeNamesAdapter extends RecyclerView.Adapter<BakingRecipeN
     private TextView bakingRecipeTextView;
     final private RecipeNameItemClickListener mRecipeNameItemClickListener;
     private static final String TAG = BakingRecipeNamesAdapter.class.getSimpleName();
-
+    private Context mContext;
     private List<Baking> mBakingRecipeInfos;
 
     public interface RecipeNameItemClickListener {
@@ -58,6 +58,7 @@ public class BakingRecipeNamesAdapter extends RecyclerView.Adapter<BakingRecipeN
     @Override
     public BakingNameViewsHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
+        mContext = context;
         int layoutIdForRecipesList = R.layout.recipe_item;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
@@ -114,7 +115,8 @@ public class BakingRecipeNamesAdapter extends RecyclerView.Adapter<BakingRecipeN
         }
 
         void bind(Baking bakingRecipeInfo) {
-            bakingRecipeTextView.setText(bakingRecipeInfo.getBakingItemName());
+            String servingsText = String.valueOf(mContext.getResources().getText(R.string.servings));
+            bakingRecipeTextView.setText(bakingRecipeInfo.getBakingItemName() + "\n" +servingsText+ bakingRecipeInfo.getServings());
         }
 
         /**
