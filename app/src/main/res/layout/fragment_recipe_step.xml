@@ -5,26 +5,22 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <com.google.android.exoplayer2.ui.SimpleExoPlayerView
-            android:layout_marginTop="5dp"
             android:id="@+id/video_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.55"/>
+            android:layout_marginTop="5dp"
+            android:layout_weight="0.55" />
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.45">
-
-
 
             <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/cv_steps"
@@ -32,8 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
-                card_view:cardCornerRadius="4dp"
-                >
+                card_view:cardCornerRadius="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -49,10 +44,11 @@
                         android:text="@string/instructions_title"
                         android:textAlignment="center"
                         android:textSize="20sp" />
+
                     <ImageView
                         android:id="@+id/recipe_steps_image"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content" />
 
                     <TextView
                         android:id="@+id/tv_steps_desc"
@@ -89,13 +85,9 @@
                             android:gravity="center"
                             android:text="@string/next_step" />
 
-
                     </LinearLayout>
-
                 </LinearLayout>
             </android.support.v7.widget.CardView>
         </ScrollView>
     </LinearLayout>
-
-
 </LinearLayout>

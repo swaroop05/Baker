@@ -1,26 +1,24 @@
 package com.example.android.baker;
 
 import android.content.Context;
-
-import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
-import static android.support.test.espresso.action.ViewActions.scrollTo;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.contrib.RecyclerViewActions;
-import android.support.test.runner.AndroidJUnit4;
 import android.support.test.rule.ActivityTestRule;
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import org.hamcrest.Matchers.*;
+import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.scrollTo;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -31,6 +29,7 @@ import static org.junit.Assert.*;
 public class BakerInstrumentedTest {
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+
     @Test
     public void useAppContext() throws Exception {
         // Context of the app under test.
@@ -39,18 +38,29 @@ public class BakerInstrumentedTest {
         assertEquals("com.example.android.baker", appContext.getPackageName());
     }
 
+    /**
+     * Tests if MainActivity is loaded with Recipe Name information
+     *
+     * @throws Exception
+     */
     @Test
     public void bakerRecipesListValidation() throws Exception {
-        RecyclerViewActions.actionOnItem(hasDescendant(withText(containsString("Nutella Pie"))),scrollTo());
-        RecyclerViewActions.actionOnItem(hasDescendant(withText(containsString("Cheesecake"))),scrollTo());
+        RecyclerViewActions.actionOnItem(hasDescendant(withText(containsString("Nutella Pie"))), scrollTo());
+        RecyclerViewActions.actionOnItem(hasDescendant(withText(containsString("Cheesecake"))), scrollTo());
     }
 
 
+    /**
+     * Tests the component of all screens in Baker app
+     *
+     * @throws Exception
+     */
     @Test
-    public void navigateToDetailActivityAndRecipeStepActivity () throws  Exception {
-        RecyclerViewActions.actionOnItem(hasDescendant(withText(containsString("Nutella Pie"))),scrollTo());
+    public void navigateToDetailActivityAndRecipeStepActivity() throws Exception {
+        RecyclerViewActions.actionOnItem(hasDescendant(withText(containsString("Nutella Pie"))), scrollTo());
         onView(withText("Nutella Pie")).perform(click());
 
+        //Adding sleep statement as workaround. The right implementation is to handle these delays via idling resources
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
@@ -58,8 +68,9 @@ public class BakerInstrumentedTest {
         }
         onView(withText("Ingredients")).check(matches(isDisplayed()));
         onView(withText("Nutella Pie")).check(matches(isDisplayed()));
-        RecyclerViewActions.actionOnItem(hasDescendant(withText(containsString("Recipe Introduction"))),scrollTo());
+        RecyclerViewActions.actionOnItem(hasDescendant(withText(containsString("Recipe Introduction"))), scrollTo());
         onView(withText("Recipe Introduction")).perform(click());
+        //Adding sleep statement as workaround. The right implementation is to handle these delays via idling resources
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
@@ -67,4 +78,4 @@ public class BakerInstrumentedTest {
         }
         onView(withText("Instructions")).check(matches(isDisplayed()));
     }
- }
+}

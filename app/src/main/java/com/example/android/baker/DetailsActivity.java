@@ -22,18 +22,28 @@ import static com.example.android.baker.RecipeListFragment.KEY_RECIPE_NAME;
 
 public class DetailsActivity extends AppCompatActivity implements StepsContentAdapter.StepsItemClickListener {
 
-    private static final String LOG_TAG = DetailsActivity.class.getName();
-    private static String mRecipeName;
-    private static String mIngredientsDetails;
-    private static int mRecipeId;
-    private List<BakingSteps> mBakingSteps;
-    private static List<BakingSteps> sBakingSteps;
     public static final String KEY_STEP_ID = "step_id";
     public static final String KEY_STEP_DESC = "step_desc";
     public static final String KEY_STEP_VIDEO_URL = "step_video_url";
     public static final String KEY_STEP_RECIPE_IMAGE = "recipe_image_url";
+    private static final String LOG_TAG = DetailsActivity.class.getName();
+    private static String mRecipeName;
+    private static String mIngredientsDetails;
+    private static int mRecipeId;
+    private static List<BakingSteps> sBakingSteps;
+    private List<BakingSteps> mBakingSteps;
     private boolean isTablet;
 
+    public static BakingSteps getBakingStepsInfo(int stepId) {
+        BakingSteps bakingStep;
+        bakingStep = null;
+        try {
+            bakingStep = sBakingSteps.get(stepId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bakingStep;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,23 +67,23 @@ public class DetailsActivity extends AppCompatActivity implements StepsContentAd
         Bundle recipeFragmentBundle = new Bundle();
         recipeFragmentBundle.putString(KEY_RECIPE_NAME, mRecipeName);
         recipeFragmentBundle.putString(KEY_INGREDIENTS_OF_SINGLE_RECIPE, mIngredientsDetails);
-        recipeFragmentBundle.putInt(KEY_RECIPE_ID,mRecipeId);
+        recipeFragmentBundle.putInt(KEY_RECIPE_ID, mRecipeId);
         RecipeFragment recipeFragment = new RecipeFragment();
         recipeFragment.setArguments(recipeFragmentBundle);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.recipe_fragment_container, recipeFragment)
                 .commit();
 
-        if (isTablet){
+        if (isTablet) {
             int stepId = 0;
             BakingSteps bakingStep = mBakingSteps.get(stepId);
             String bakingStepDescription = bakingStep.getBakingStepsDescription();
             String bakingStepVideoUrl = bakingStep.getBakingStepsVideoUrl();
             Bundle recipeStepFragmentBundle = new Bundle();
-            recipeStepFragmentBundle.putString(KEY_STEP_DESC,bakingStepDescription );
+            recipeStepFragmentBundle.putString(KEY_STEP_DESC, bakingStepDescription);
             recipeStepFragmentBundle.putString(KEY_STEP_VIDEO_URL, bakingStepVideoUrl);
             recipeStepFragmentBundle.putInt(KEY_STEP_ID, stepId);
-            recipeStepFragmentBundle.putInt(KEY_RECIPE_ID,mRecipeId);
+            recipeStepFragmentBundle.putInt(KEY_RECIPE_ID, mRecipeId);
             RecipeStepFragment recipeStepFragment = new RecipeStepFragment();
             recipeStepFragment.setArguments(recipeStepFragmentBundle);
             recipeStepFragment.setRetainInstance(false);
@@ -81,7 +91,6 @@ public class DetailsActivity extends AppCompatActivity implements StepsContentAd
                     .replace(R.id.step_and_video_container_fragment, recipeStepFragment)
                     .commit();
         }
-
     }
 
     @Override
@@ -91,20 +100,20 @@ public class DetailsActivity extends AppCompatActivity implements StepsContentAd
         String bakingStepVideoUrl = bakingStep.getBakingStepsVideoUrl();
         String bakingImageUrl = bakingStep.getBakingStepsThumbnailUrl();
         int stepId = clickedItemIndex;
-        if (isTablet){
+        if (isTablet) {
             Bundle recipeStepFragmentBundle = new Bundle();
-            recipeStepFragmentBundle.putString(KEY_STEP_DESC,bakingStepDescription );
+            recipeStepFragmentBundle.putString(KEY_STEP_DESC, bakingStepDescription);
             recipeStepFragmentBundle.putString(KEY_STEP_VIDEO_URL, bakingStepVideoUrl);
             recipeStepFragmentBundle.putInt(KEY_STEP_ID, stepId);
-            recipeStepFragmentBundle.putInt(KEY_RECIPE_ID,mRecipeId);
-            recipeStepFragmentBundle.putString(KEY_STEP_RECIPE_IMAGE,bakingImageUrl);
+            recipeStepFragmentBundle.putInt(KEY_RECIPE_ID, mRecipeId);
+            recipeStepFragmentBundle.putString(KEY_STEP_RECIPE_IMAGE, bakingImageUrl);
             RecipeStepFragment recipeStepFragment = new RecipeStepFragment();
             recipeStepFragment.setArguments(recipeStepFragmentBundle);
             recipeStepFragment.setRetainInstance(false);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.step_and_video_container_fragment, recipeStepFragment)
                     .commit();
-        }else {
+        } else {
             Intent viewRecipeStepActivityIntent = new Intent(this, RecipeStepActivity.class);
             viewRecipeStepActivityIntent.putExtra(KEY_STEP_DESC, bakingStepDescription);
             viewRecipeStepActivityIntent.putExtra(KEY_STEP_ID, stepId);
@@ -113,22 +122,16 @@ public class DetailsActivity extends AppCompatActivity implements StepsContentAd
             viewRecipeStepActivityIntent.putExtra(KEY_STEP_RECIPE_IMAGE, bakingImageUrl);
             startActivity(viewRecipeStepActivityIntent);
         }
-
-
-
     }
 
-    public static BakingSteps getBakingStepsInfo(int stepId) {
-        BakingSteps bakingStep;
-        bakingStep = null;
-        try {
-            bakingStep = sBakingSteps.get(stepId);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return bakingStep;
-    }
-
+    /**
+     * Replaces Fragment in tablet mode
+     *
+     * @param newFragment
+     * @param containerId
+     * @param TAG
+     * @param oldFragment
+     */
     public void replaceFragment(Fragment newFragment, @IdRes int containerId, String TAG, Fragment oldFragment) {
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)

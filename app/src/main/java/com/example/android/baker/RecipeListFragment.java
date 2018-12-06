@@ -37,43 +37,58 @@ import butterknife.ButterKnife;
  */
 
 public class RecipeListFragment extends Fragment implements BakingRecipeNamesAdapter.RecipeNameItemClickListener {
-    private static final String LOG_TAG = RecipeListFragment.class.getName();
-
-    @BindView(R.id.empty_view)
-    TextView mEmptyStateTextView;
-
-    @BindView(R.id.rv_recipe_names)
-    RecyclerView mBakingRecipeNamesRecyclerView;
-
-    @BindView(R.id.no_internet)
-    TextView noInternetTextView;
-
-    @BindView(R.id.loading_spinner)
-    ProgressBar mProgressBar;
-
-    private static Parcelable STATE = null;
-    private List<Baking> mBakingInfos;
-    private static  List<Baking> BAKING_INFO_MASTER;
     public static final String KEY_RECIPE_NAME = "recipeName";
     public static final String KEY_INGREDIENTS_OF_SINGLE_RECIPE = "singleRecipeIngredients";
-    public static final String KEY_STEPS_OF_SINGLE_RECIPE = "singleRecipeSteps";
-    public static final String KEY_RECIPE_ID ="recipe_id";
-    public Context mContext;
+    public static final String KEY_RECIPE_ID = "recipe_id";
+    private static final String LOG_TAG = RecipeListFragment.class.getName();
+    private static Parcelable STATE = null;
+    private static List<Baking> BAKING_INFO_MASTER;
+    @BindView(R.id.empty_view)
+    TextView mEmptyStateTextView;
+    @BindView(R.id.rv_recipe_names)
+    RecyclerView mBakingRecipeNamesRecyclerView;
+    @BindView(R.id.no_internet)
+    TextView noInternetTextView;
+    @BindView(R.id.loading_spinner)
+    ProgressBar mProgressBar;
+    private List<Baking> mBakingInfos;
     private boolean isTablet;
 
+    /**
+     * static method to get all ingredients of a given recipe and return as a single text
+     *
+     * @param singleBakingRecipeInfo
+     * @return
+     */
+    public static String getAllIngredientsDetails(Baking singleBakingRecipeInfo) {
+        String allIngredientsDetails = "";
+        List<BakingIngredients> bakingIngredientsArrayList = singleBakingRecipeInfo.getBakingIngredientsArrayList();
+        for (BakingIngredients bakingIngredient : bakingIngredientsArrayList) {
+            String quantity = bakingIngredient.getQuantity();
+            String measure = bakingIngredient.getMeasure();
+            String ingredient = bakingIngredient.getIngredient();
+            allIngredientsDetails = allIngredientsDetails + "- " + quantity + " " + measure + " of " + ingredient + "\n\n";
 
+        }
+        return allIngredientsDetails;
+    }
 
-
+    /**
+     * static method to return Step details of given recipe based on recipe id.
+     *
+     * @param recipeId
+     * @return
+     */
+    public static List<BakingSteps> getStepsDetailsOfRecipe(int recipeId) {
+        List<BakingSteps> bakingStepsList = BAKING_INFO_MASTER.get(recipeId).getBakingStepsArrayList();
+        return bakingStepsList;
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_recipe_list, container, false);
         ButterKnife.bind(this, rootView);
-        //mEmptyStateTextView = rootView.findViewById(R.id.empty_view);
-       // mProgressBar = rootView.findViewById(R.id.loading_spinner);
-       // noInternetTextView = rootView.findViewById(R.id.no_internet);
-        //mBakingRecipeNamesRecyclerView = rootView.findViewById(R.id.rv_recipe_names);
         mProgressBar.setVisibility(View.GONE);
         isTablet = getResources().getBoolean(R.bool.isTablet);
         if (isNetworkConnected()) {
@@ -85,28 +100,60 @@ public class RecipeListFragment extends Fragment implements BakingRecipeNamesAda
             noInternetTextView.setVisibility(View.VISIBLE);
             noInternetTextView.setText(R.string.no_internet);
         }
-
         return rootView;
-
     }
+
     @Override
     public void onRecipeNameItemClick(int clickedItemIndex) {
-        Bundle recipeFragmentBundle = new Bundle();
-
         Baking singleRecipeDetails = mBakingInfos.get(clickedItemIndex);
         String bakingRecipeName = singleRecipeDetails.getBakingItemName();
         String recipeId = singleRecipeDetails.getBakingItemId();
-        String ingredientsDetails = getAllIngredientsDetails (singleRecipeDetails);
+        String ingredientsDetails = getAllIngredientsDetails(singleRecipeDetails);
         List<BakingSteps> bakingStepsArrayList = singleRecipeDetails.getBakingStepsArrayList();
         Intent detailsActivityIntent = new Intent(getContext(), DetailsActivity.class);
         detailsActivityIntent.putExtra(KEY_RECIPE_NAME, bakingRecipeName);
         detailsActivityIntent.putExtra(KEY_INGREDIENTS_OF_SINGLE_RECIPE, ingredientsDetails);
-        detailsActivityIntent.putExtra(KEY_RECIPE_ID,clickedItemIndex);
-
-
+        detailsActivityIntent.putExtra(KEY_RECIPE_ID, clickedItemIndex);
         startActivity(detailsActivityIntent);
     }
 
+    /**
+     * updates the UI with RecipeName and Servings details via adapter
+     *
+     * @param bakingRecipesInfo
+     */
+    private void updateUI(List<Baking> bakingRecipesInfo) {
+        Log.d(LOG_TAG, "updateUI Method is called now");
+        BakingRecipeNamesAdapter bakingRecipeNamesAdapter = new BakingRecipeNamesAdapter(bakingRecipesInfo, this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        if (isTablet) {
+            mBakingRecipeNamesRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        } else {
+            mBakingRecipeNamesRecyclerView.setLayoutManager(layoutManager);
+        }
+        mBakingRecipeNamesRecyclerView.setAdapter(bakingRecipeNamesAdapter);
+
+    }
+
+    /**
+     * checks the network connection
+     *
+     * @return boolean value
+     */
+    private boolean isNetworkConnected() {
+        Log.d(LOG_TAG, "isNetworkConnected Method is called now");
+        boolean isConnected;
+        ConnectivityManager cm =
+                (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        return isConnected;
+    }
+
+    /**
+     * Async task to load the Baking Items from Json and update the UI
+     */
     public class LoadBakingItemsTask extends AsyncTask<Context, Void, List<Baking>> {
 
         /**
@@ -126,7 +173,6 @@ public class RecipeListFragment extends Fragment implements BakingRecipeNamesAda
         @Override
         protected List<Baking> doInBackground(Context... contexts) {
             Log.d(LOG_TAG, "LoadBakingItemsTask Class -  doInBackground method is called now");
-
             return QueryUtils.fetchBakingInfo(contexts[0]);
         }
 
@@ -150,7 +196,7 @@ public class RecipeListFragment extends Fragment implements BakingRecipeNamesAda
             mProgressBar.setVisibility(View.GONE);
             if (bakingRecipesInfo == null) {
                 updateUI(new ArrayList<Baking>());
-            }else if (bakingRecipesInfo.size() == 0) {
+            } else if (bakingRecipesInfo.size() == 0) {
                 if (isNetworkConnected()) {
                     noInternetTextView.setVisibility(View.GONE);
                     updateUI(new ArrayList<Baking>());
@@ -167,9 +213,6 @@ public class RecipeListFragment extends Fragment implements BakingRecipeNamesAda
                     noInternetTextView.setVisibility(View.GONE);
                     mEmptyStateTextView.setVisibility(View.GONE);
                     updateUI(bakingRecipesInfo);
-                    if (STATE != null) {
-                        //mBakingRecipeNamesRecyclerView.onRestoreInstanceState(STATE);
-                    }
                 } else {
                     updateUI(new ArrayList<Baking>());
                     mEmptyStateTextView.setVisibility(View.GONE);
@@ -179,57 +222,5 @@ public class RecipeListFragment extends Fragment implements BakingRecipeNamesAda
             }
 
         }
-    }
-
-    private void updateUI(List<Baking> bakingRecipesInfo) {
-        Log.d(LOG_TAG, "updateUI Method is called now");
-        BakingRecipeNamesAdapter bakingRecipeNamesAdapter = new BakingRecipeNamesAdapter(bakingRecipesInfo, this);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        if (isTablet){
-            mBakingRecipeNamesRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        }else {
-            mBakingRecipeNamesRecyclerView.setLayoutManager(layoutManager);
-        }
-
-        mBakingRecipeNamesRecyclerView.setAdapter(bakingRecipeNamesAdapter);
-
-
-    }
-
-    public static String getAllIngredientsDetails(Baking singleBakingRecipeInfo) {
-        String allIngredientsDetails = "";
-        List<BakingIngredients> bakingIngredientsArrayList = singleBakingRecipeInfo.getBakingIngredientsArrayList();
-        for (BakingIngredients bakingIngredient : bakingIngredientsArrayList) {
-            String quantity = bakingIngredient.getQuantity();
-            String measure = bakingIngredient.getMeasure();
-            String ingredient = bakingIngredient.getIngredient();
-            allIngredientsDetails = allIngredientsDetails +  "- " + quantity + " " + measure + " of " + ingredient + "\n\n";
-
-        }
-
-
-        return allIngredientsDetails;
-    }
-
-
-    public static List<BakingSteps> getStepsDetailsOfRecipe(int recipeId){
-        List<BakingSteps> bakingStepsList = BAKING_INFO_MASTER.get(recipeId).getBakingStepsArrayList();
-        return bakingStepsList;
-    }
-
-    /**
-     * checks the network connection
-     *
-     * @return boolean value
-     */
-    private boolean isNetworkConnected() {
-        Log.d(LOG_TAG, "isNetworkConnected Method is called now");
-        boolean isConnected;
-        ConnectivityManager cm =
-                (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        isConnected = activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
-        return isConnected;
     }
 }

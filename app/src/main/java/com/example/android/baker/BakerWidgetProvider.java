@@ -6,16 +6,12 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
-import android.view.View;
 import android.widget.RemoteViews;
 
 import com.example.android.baker.data.Baking;
 import com.example.android.baker.data.QueryUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.android.baker.RecipeListFragment.getAllIngredientsDetails;
@@ -25,17 +21,18 @@ import static com.example.android.baker.RecipeListFragment.getAllIngredientsDeta
  */
 public class BakerWidgetProvider extends AppWidgetProvider {
 
-    private static int currentRecipeIndex ;
-    public static List<Baking> allBakingRecipes;
     private static final String LOG_TAG = BakerWidgetProvider.class.getName();
+    public static List<Baking> allBakingRecipes;
+    private static int currentRecipeIndex;
     private static int currentService = 0;
+
     public static int getCurrentRecipeIndex() {
         return currentRecipeIndex;
     }
 
     public static void setCurrentRecipeIndex(int recipeIndex) {
         currentRecipeIndex = recipeIndex;
-        Log.d(LOG_TAG, "Recipe index is now:- "+currentRecipeIndex);
+        Log.d(LOG_TAG, "Recipe index is now:- " + currentRecipeIndex);
     }
 
 
@@ -49,28 +46,35 @@ public class BakerWidgetProvider extends AppWidgetProvider {
 
 
         Intent intent = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context,0,intent,0);
-        views.setOnClickPendingIntent(R.id.baker_widget_recipe_name,pendingIntent);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        views.setOnClickPendingIntent(R.id.baker_widget_recipe_name, pendingIntent);
 
-
+        //Intent to be set when 'Next' button is clicked
         Intent nextIntent = BakerWidgetService.getActionNextRecipeIntent(context);
         PendingIntent nextPendingIntent = PendingIntent.getService(context, ++currentService, nextIntent, 0);
-        views.setOnClickPendingIntent(R.id.recipe_widget_next,nextPendingIntent);
+        views.setOnClickPendingIntent(R.id.recipe_widget_next, nextPendingIntent);
 
+        //Intent to be set when 'Previous' button is clicked
         Intent previousIntent = BakerWidgetService.getActionPreviousRecipeIntent(context);
         PendingIntent previousPendingIntent = PendingIntent.getService(context, ++currentService, previousIntent, 0);
-        views.setOnClickPendingIntent(R.id.recipe_widget_previous,previousPendingIntent);
+        views.setOnClickPendingIntent(R.id.recipe_widget_previous, previousPendingIntent);
 
 
-        if (allBakingRecipes == null){
-            new LoadBakingRecipesTask(views,appWidgetManager,appWidgetId ).execute(context);
+        if (allBakingRecipes == null) {
+            new LoadBakingRecipesTask(views, appWidgetManager, appWidgetId).execute(context);
         } else {
-            views.setTextViewText(R.id.baker_widget_recipe_name,allBakingRecipes.get(getCurrentRecipeIndex()).getBakingItemName());
-            views.setTextViewText(R.id.baker_widget_recipe_ingredients,getAllIngredientsDetails (allBakingRecipes.get(getCurrentRecipeIndex())));
+            views.setTextViewText(R.id.baker_widget_recipe_name, allBakingRecipes.get(getCurrentRecipeIndex()).getBakingItemName());
+            views.setTextViewText(R.id.baker_widget_recipe_ingredients, getAllIngredientsDetails(allBakingRecipes.get(getCurrentRecipeIndex())));
         }
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
+    }
+
+    public static void updateAllWidgets(Context context, AppWidgetManager widgetManager, int appWidgetIds[]) {
+        for (int i = 0; i < appWidgetIds.length; i++) {
+            updateAppWidget(context, widgetManager, appWidgetIds[i]);
+        }
     }
 
     @Override
@@ -79,12 +83,6 @@ public class BakerWidgetProvider extends AppWidgetProvider {
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
-        }
-    }
-
-    public static void updateAllWidgets(Context context, AppWidgetManager widgetManager, int appWidgetIds[]) {
-        for (int i = 0; i < appWidgetIds.length; i++) {
-            updateAppWidget(context, widgetManager, appWidgetIds[i]);
         }
     }
 
@@ -98,13 +96,15 @@ public class BakerWidgetProvider extends AppWidgetProvider {
         // Enter relevant functionality for when the last widget is disabled
     }
 
-
+    /**
+     * Async task to load the baking recipes and update the Widget textview
+     */
     public static class LoadBakingRecipesTask extends AsyncTask<Context, Void, List<Baking>> {
         private RemoteViews views;
         private int widgetID;
         private AppWidgetManager widgetManager;
 
-        public LoadBakingRecipesTask(RemoteViews views,AppWidgetManager appWidgetManager,
+        public LoadBakingRecipesTask(RemoteViews views, AppWidgetManager appWidgetManager,
                                      int appWidgetId) {
             this.views = views;
             this.widgetID = appWidgetId;
@@ -145,15 +145,12 @@ public class BakerWidgetProvider extends AppWidgetProvider {
         @Override
         protected void onPostExecute(List<Baking> bakingRecipesInfo) {
             super.onPostExecute(bakingRecipesInfo);
-            allBakingRecipes = bakingRecipesInfo;
-            views.setTextViewText(R.id.baker_widget_recipe_name,bakingRecipesInfo.get(getCurrentRecipeIndex()).getBakingItemName());
-            views.setTextViewText(R.id.baker_widget_recipe_ingredients,getAllIngredientsDetails (bakingRecipesInfo.get(getCurrentRecipeIndex())));
-            widgetManager.updateAppWidget(widgetID, views);
             Log.d(LOG_TAG, "LoadBakingRecipesTask Class -  onPostExecute Method is called now");
-            Log.d(LOG_TAG, bakingRecipesInfo.get(getCurrentRecipeIndex()).getBakingItemName());
+            allBakingRecipes = bakingRecipesInfo;
+            views.setTextViewText(R.id.baker_widget_recipe_name, bakingRecipesInfo.get(getCurrentRecipeIndex()).getBakingItemName());
+            views.setTextViewText(R.id.baker_widget_recipe_ingredients, getAllIngredientsDetails(bakingRecipesInfo.get(getCurrentRecipeIndex())));
+            widgetManager.updateAppWidget(widgetID, views);
         }
     }
-
-
 }
 

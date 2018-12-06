@@ -17,12 +17,12 @@ import java.util.List;
  * Created by meets on 10/2/2018.
  */
 
-public class StepsContentAdapter extends RecyclerView.Adapter<StepsContentAdapter.StepsContentViewsHolder>{
+public class StepsContentAdapter extends RecyclerView.Adapter<StepsContentAdapter.StepsContentViewsHolder> {
 
-    private CardView stepsCardView;
-    private TextView stepsContentTextView;
     private static final String TAG = StepsContentAdapter.class.getSimpleName();
     final private StepsContentAdapter.StepsItemClickListener mStepsContentItemClickListener;
+    private CardView stepsCardView;
+    private TextView stepsContentTextView;
     private List<BakingSteps> mBakingStepsInfos;
 
     public StepsContentAdapter(List<BakingSteps> bakingSteps, StepsItemClickListener mStepsContentItemClickListener) {
@@ -97,6 +97,9 @@ public class StepsContentAdapter extends RecyclerView.Adapter<StepsContentAdapte
         return mBakingStepsInfos.size();
     }
 
+    /**
+     * Interface for handling Steps Item click
+     */
     public interface StepsItemClickListener {
         void onStepsItemClick(int clickedItemIndex);
     }
@@ -126,5 +129,4 @@ public class StepsContentAdapter extends RecyclerView.Adapter<StepsContentAdapte
             mStepsContentItemClickListener.onStepsItemClick(clickedPosition);
         }
     }
-
 }

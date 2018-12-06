@@ -19,16 +19,12 @@ import java.util.List;
 
 public class BakingRecipeNamesAdapter extends RecyclerView.Adapter<BakingRecipeNamesAdapter.BakingNameViewsHolder> {
 
+    private static final String TAG = BakingRecipeNamesAdapter.class.getSimpleName();
+    final private RecipeNameItemClickListener mRecipeNameItemClickListener;
     private CardView bakingRecipeCardView;
     private TextView bakingRecipeTextView;
-    final private RecipeNameItemClickListener mRecipeNameItemClickListener;
-    private static final String TAG = BakingRecipeNamesAdapter.class.getSimpleName();
     private Context mContext;
     private List<Baking> mBakingRecipeInfos;
-
-    public interface RecipeNameItemClickListener {
-        void onRecipeNameItemClick(int clickedItemIndex);
-    }
 
     public BakingRecipeNamesAdapter(List<Baking> bakings, RecipeNameItemClickListener recipeNameItemClickListener) {
         mBakingRecipeInfos = bakings;
@@ -103,6 +99,9 @@ public class BakingRecipeNamesAdapter extends RecyclerView.Adapter<BakingRecipeN
         return mBakingRecipeInfos.size();
     }
 
+    public interface RecipeNameItemClickListener {
+        void onRecipeNameItemClick(int clickedItemIndex);
+    }
 
     class BakingNameViewsHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -116,7 +115,7 @@ public class BakingRecipeNamesAdapter extends RecyclerView.Adapter<BakingRecipeN
 
         void bind(Baking bakingRecipeInfo) {
             String servingsText = String.valueOf(mContext.getResources().getText(R.string.servings));
-            bakingRecipeTextView.setText(bakingRecipeInfo.getBakingItemName() + "\n" +servingsText+ bakingRecipeInfo.getServings());
+            bakingRecipeTextView.setText(bakingRecipeInfo.getBakingItemName() + "\n" + servingsText + bakingRecipeInfo.getServings());
         }
 
         /**

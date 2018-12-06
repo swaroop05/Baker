@@ -9,6 +9,13 @@ public class BakingIngredients {
     private String measure;
     private String ingredient;
 
+    /**
+     * Constructor to initialize the variables
+     *
+     * @param quantity
+     * @param measure
+     * @param ingredient
+     */
     public BakingIngredients(String quantity, String measure, String ingredient) {
         this.quantity = quantity;
         this.measure = measure;

@@ -12,6 +12,15 @@ public class BakingSteps {
     private String bakingStepsVideoUrl;
     private String bakingStepsThumbnailUrl;
 
+    /**
+     * Constructor to initialize the variables
+     *
+     * @param bakingStepsId
+     * @param bakingStepsShortDescription
+     * @param bakingStepsDescription
+     * @param bakingStepsVideoUrl
+     * @param bakingStepsThumbnailUrl
+     */
     public BakingSteps(String bakingStepsId, String bakingStepsShortDescription, String bakingStepsDescription, String bakingStepsVideoUrl, String bakingStepsThumbnailUrl) {
         this.bakingStepsId = bakingStepsId;
         this.bakingStepsShortDescription = bakingStepsShortDescription;
@@ -39,7 +48,4 @@ public class BakingSteps {
     public String getBakingStepsThumbnailUrl() {
         return bakingStepsThumbnailUrl;
     }
-
-
-
 }

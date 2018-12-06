@@ -1,7 +1,6 @@
 package com.example.android.baker;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.android.baker.data.BakingSteps;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -29,13 +27,9 @@ import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.squareup.picasso.Picasso;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,9 +38,7 @@ import static com.example.android.baker.DetailsActivity.KEY_STEP_DESC;
 import static com.example.android.baker.DetailsActivity.KEY_STEP_ID;
 import static com.example.android.baker.DetailsActivity.KEY_STEP_RECIPE_IMAGE;
 import static com.example.android.baker.DetailsActivity.KEY_STEP_VIDEO_URL;
-import static com.example.android.baker.RecipeListFragment.KEY_INGREDIENTS_OF_SINGLE_RECIPE;
 import static com.example.android.baker.RecipeListFragment.KEY_RECIPE_ID;
-import static com.example.android.baker.RecipeListFragment.KEY_RECIPE_NAME;
 
 /**
  * Created by meets on 10/3/2018.
@@ -54,45 +46,46 @@ import static com.example.android.baker.RecipeListFragment.KEY_RECIPE_NAME;
 
 public class RecipeStepFragment extends Fragment {
     private static final String LOG_TAG = RecipeStepFragment.class.getName();
+    private static final String SEEK_POSITION = "seekPosition";
+    @Nullable
+    @BindView(R.id.tv_steps_desc)
+    TextView mStepDescriptionTextView;
+    @Nullable
+    @BindView(R.id.btn_previous_step_navigation)
+    Button mPreviousStepBtn;
+    @Nullable
+    @BindView(R.id.btn_next_step_navigation)
+    Button mNextStepBtn;
+    @Nullable
+    @BindView((R.id.recipe_steps_image))
+    ImageView mStepImageView;
+    @BindView(R.id.video_view)
+    SimpleExoPlayerView mPlayerView;
     private String mStepDesc;
     private int mStepId;
     private int mRecipeId;
     private String mStepVideoUrl;
     private String mStepImageUrl;
-
-    @Nullable
-    @BindView(R.id.tv_steps_desc)
-    TextView mStepDescriptionTextView;
-
-    @Nullable
-    @BindView(R.id.btn_previous_step_navigation)
-    Button mPreviousStepBtn;
-
-    @Nullable
-    @BindView(R.id.btn_next_step_navigation)
-    Button mNextStepBtn;
-
-    @Nullable
-    @BindView((R.id.recipe_steps_image))
-    ImageView mStepImageView;
-
-    /*//@BindView(R.id.tv_steps_title)
-    TextView mStepsHeader;*/
-
-    @BindView(R.id.video_view)
-    SimpleExoPlayerView mPlayerView;
-
     private SimpleExoPlayer mExoPlayer;
-    private List<BakingSteps> mBakingSteps;
     private long seekPosition = -1;
-    private static final String SEEK_POSITION = "seekPosition";
     private boolean isTablet;
+
+    /**
+     * returns Recipefragment after setting bundle to it as arugments
+     *
+     * @param bundle
+     * @return
+     */
+    public static RecipeStepFragment newInstance(Bundle bundle) {
+        RecipeStepFragment recipeStepFragment = new RecipeStepFragment();
+        recipeStepFragment.setArguments(bundle);
+        return recipeStepFragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         View rootView;
-
         isTablet = getResources().getBoolean(R.bool.isTablet);
         if (savedInstanceState != null) {
             mStepDesc = savedInstanceState.getString(KEY_STEP_DESC);
@@ -101,10 +94,10 @@ public class RecipeStepFragment extends Fragment {
             mStepId = savedInstanceState.getInt(KEY_STEP_ID);
             mStepImageUrl = savedInstanceState.getString(KEY_STEP_RECIPE_IMAGE);
 
-        }else {
+        } else {
             Bundle bundle = getArguments();
             if (bundle != null) {
-                mStepDesc = bundle.getString(KEY_STEP_DESC) ;
+                mStepDesc = bundle.getString(KEY_STEP_DESC);
                 mStepVideoUrl = bundle.getString(KEY_STEP_VIDEO_URL);
                 mStepImageUrl = bundle.getString(KEY_STEP_RECIPE_IMAGE);
                 mStepId = bundle.getInt(KEY_STEP_ID, 0);
@@ -116,37 +109,29 @@ public class RecipeStepFragment extends Fragment {
             seekPosition = savedInstanceState.getLong(SEEK_POSITION);
         }
 
-        if (isLandscape() && !isTablet){
+        if (isLandscape() && !isTablet) {
             rootView = inflater.inflate(R.layout.fragment_recipe_step_land, container, false);
             ButterKnife.bind(this, rootView);
         } else {
             rootView = inflater.inflate(R.layout.fragment_recipe_step, container, false);
             ButterKnife.bind(this, rootView);
-           //mStepDescriptionTextView = rootView.findViewById(R.id.tv_steps_desc);
-          // mPreviousStepBtn = rootView.findViewById(R.id.btn_previous_step_navigation);
-         //  mNextStepBtn = rootView.findViewById(R.id.btn_next_step_navigation);
-         //  mStepsHeader = rootView.findViewById(R.id.tv_steps_title);
             mPreviousStepBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mStepId = mStepId - 1;
-                    if ((DetailsActivity.getBakingStepsInfo(mStepId)) != null){
-                        Bundle previousStepBundle =new Bundle();
-                        previousStepBundle.putString(KEY_STEP_DESC,DetailsActivity.getBakingStepsInfo(mStepId).getBakingStepsDescription() );
+                    if ((DetailsActivity.getBakingStepsInfo(mStepId)) != null) {
+                        Bundle previousStepBundle = new Bundle();
+                        previousStepBundle.putString(KEY_STEP_DESC, DetailsActivity.getBakingStepsInfo(mStepId).getBakingStepsDescription());
                         previousStepBundle.putString(KEY_STEP_VIDEO_URL, DetailsActivity.getBakingStepsInfo(mStepId).getBakingStepsVideoUrl());
                         previousStepBundle.putString(KEY_STEP_RECIPE_IMAGE, DetailsActivity.getBakingStepsInfo(mStepId).getBakingStepsThumbnailUrl());
                         previousStepBundle.putInt(KEY_STEP_ID, mStepId);
-                        previousStepBundle.putInt(KEY_RECIPE_ID,mRecipeId);
+                        previousStepBundle.putInt(KEY_RECIPE_ID, mRecipeId);
                         //Check if thie RecipeID can be deleted since this is not used anywhere
 
                         RecipeStepFragment fragment = RecipeStepFragment.newInstance(previousStepBundle);
                         seekPosition = -1;
                         replaceFragment(fragment);
-                       /* mStepDesc = DetailsActivity.getBakingStepsInfo(mStepId).getBakingStepsDescription();
-                        mStepVideoUrl = DetailsActivity.getBakingStepsInfo(mStepId).getBakingStepsVideoUrl();
-
-                        updateUi ();*/
-                    }else {
+                    } else {
                         mStepId = mStepId + 1;
                         displayToastMessage("Reached First Step");
                     }
@@ -157,96 +142,96 @@ public class RecipeStepFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     mStepId = mStepId + 1;
-                    if ((DetailsActivity.getBakingStepsInfo(mStepId)) != null){
-                        Bundle nextStepBundle =new Bundle();
-                        nextStepBundle.putString(KEY_STEP_DESC,DetailsActivity.getBakingStepsInfo(mStepId).getBakingStepsDescription() );
+                    if ((DetailsActivity.getBakingStepsInfo(mStepId)) != null) {
+                        Bundle nextStepBundle = new Bundle();
+                        nextStepBundle.putString(KEY_STEP_DESC, DetailsActivity.getBakingStepsInfo(mStepId).getBakingStepsDescription());
                         nextStepBundle.putString(KEY_STEP_VIDEO_URL, DetailsActivity.getBakingStepsInfo(mStepId).getBakingStepsVideoUrl());
                         nextStepBundle.putString(KEY_STEP_RECIPE_IMAGE, DetailsActivity.getBakingStepsInfo(mStepId).getBakingStepsThumbnailUrl());
                         nextStepBundle.putInt(KEY_STEP_ID, mStepId);
-                        nextStepBundle.putInt(KEY_RECIPE_ID,mRecipeId);
+                        nextStepBundle.putInt(KEY_RECIPE_ID, mRecipeId);
                         //Check if thie RecipeID can be deleted since this is not used anywhere
-
                         RecipeStepFragment fragment = RecipeStepFragment.newInstance(nextStepBundle);
                         seekPosition = -1;
                         replaceFragment(fragment);
-
-
-                       /* mStepDesc = DetailsActivity.getBakingStepsInfo(mStepId).getBakingStepsDescription();
-                        mStepVideoUrl = DetailsActivity.getBakingStepsInfo(mStepId).getBakingStepsVideoUrl();
-                        seekPosition = -1;
-                        updateUi ();*/
-                    }else {
+                    } else {
                         mStepId = mStepId - 1;
                         displayToastMessage("Reached Last Step");
                     }
                 }
             });
         }
-
-      // mPlayerView = rootView.findViewById(R.id.video_view);
-        updateUi ();
+        updateUi();
         return rootView;
     }
 
+    /**
+     * replaces the fragment via respective Activity instance
+     *
+     * @param fragment
+     */
     private void replaceFragment(Fragment fragment) {
-
         if (getActivity() instanceof RecipeStepActivity) {
             ((RecipeStepActivity) getActivity()).replaceFragment(fragment, R.id.step_and_video_container_fragment, RecipeStepFragment.LOG_TAG, this);
-        }else if (getActivity() instanceof DetailsActivity){
+        } else if (getActivity() instanceof DetailsActivity) {
             ((DetailsActivity) getActivity()).replaceFragment(fragment, R.id.step_and_video_container_fragment, RecipeStepFragment.LOG_TAG, this);
         }
     }
-    public static RecipeStepFragment newInstance(Bundle bundle) {
-        RecipeStepFragment recipeStepFragment = new RecipeStepFragment();
-        recipeStepFragment.setArguments(bundle);
-        return recipeStepFragment;
-    }
 
+    /**
+     * returns if device is in landscape mode
+     *
+     * @return
+     */
     public boolean isLandscape() {
         return getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
-    private void updateUi (){
-        if (!isLandscape() || isTablet){
+
+    /**
+     * updates the UI of Baking Steps screen
+     */
+    private void updateUi() {
+        if (!isLandscape() || isTablet) {
             mStepDescriptionTextView.setText(mStepDesc);
         }
-        if (mExoPlayer != null){
+        if (mExoPlayer != null) {
             releasePlayer();
         }
-        if (!mStepVideoUrl.isEmpty() ){
-            if (!isLandscape()){
+        if (!mStepVideoUrl.isEmpty()) {
+            if (!isLandscape()) {
                 mStepImageView.setVisibility(View.GONE);
             }
 
             mPlayerView.setVisibility(View.VISIBLE);
             initializePlayer(Uri.parse(mStepVideoUrl));
-        }else if (!mStepImageUrl.isEmpty()){
-            if (mStepImageUrl.contains(".mp4")){
-                if (!isLandscape()){
+        } else if (!mStepImageUrl.isEmpty()) {
+            if (mStepImageUrl.contains(".mp4")) {
+                if (!isLandscape()) {
                     mStepImageView.setVisibility(View.GONE);
                 }
                 mPlayerView.setVisibility(View.VISIBLE);
                 initializePlayer(Uri.parse(mStepImageUrl));
-            }else {
-                if (!isLandscape()){
+            } else {
+                if (!isLandscape()) {
                     mPlayerView.setVisibility(View.GONE);
                     mStepImageView.setVisibility(View.VISIBLE);
                     Picasso.with(getContext())
                             .load(mStepImageUrl)
                             .into(mStepImageView);
                 }
-
             }
-
-
-        } else{
+        } else {
             mPlayerView.setVisibility(View.GONE);
             mStepImageView.setVisibility(View.GONE);
         }
     }
 
-
+    /**
+     * initializes the exo player
+     *
+     * @param mediaUri
+     */
     private void initializePlayer(Uri mediaUri) {
-        if (mExoPlayer == null){
+        if (mExoPlayer == null) {
             TrackSelector trackSelector = new DefaultTrackSelector();
             LoadControl loadControl = new DefaultLoadControl();
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(new DefaultRenderersFactory(getContext()), trackSelector, loadControl);
@@ -256,15 +241,10 @@ public class RecipeStepFragment extends Fragment {
                 mExoPlayer.seekTo(seekPosition);
             }
             // Prepare the MediaSource.
-            String userAgent = Util.getUserAgent(getContext(), "Baking");
-            /*MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
-                    getContext(), userAgent), new DefaultExtractorsFactory(), null, null);*/
             MediaSource mediaSource = new ExtractorMediaSource(mediaUri,
                     new DefaultHttpDataSourceFactory("ua"),
                     new DefaultExtractorsFactory(), null, null);
-
             mExoPlayer.prepare(mediaSource, true, false);
-
         }
     }
 
@@ -301,7 +281,7 @@ public class RecipeStepFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(isLandscape() && !isTablet){
+        if (isLandscape() && !isTablet) {
             hideSystemUi();
             if ((Util.SDK_INT <= 23 || mExoPlayer == null)) {
                 initializePlayer(Uri.parse(mStepVideoUrl));
@@ -353,5 +333,4 @@ public class RecipeStepFragment extends Fragment {
         toast.setGravity(Gravity.BOTTOM, 0, 0);
         toast.show();
     }
-
 }

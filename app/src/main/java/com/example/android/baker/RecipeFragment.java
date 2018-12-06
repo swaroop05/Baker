@@ -39,13 +39,9 @@ public class RecipeFragment extends Fragment {
 
     private static String mRecipeName;
     private static String mIngredientsDetails;
-
     private List<BakingSteps> mBakingSteps;
     private static List<BakingSteps> sBakingSteps;
     private static int mRecipeId;
-    public static final String KEY_STEP_ID = "step_id";
-    public static final String KEY_STEP_DESC = "step_desc";
-    public static final String KEY_STEP_VIDEO_URL = "step_video_url";
     StepsContentAdapter.StepsItemClickListener mCallback;
     @Nullable
     @Override
@@ -68,14 +64,15 @@ public class RecipeFragment extends Fragment {
         }
         mBakingSteps = RecipeListFragment.getStepsDetailsOfRecipe(mRecipeId);
         sBakingSteps = mBakingSteps;
-
-       // mIngredientsInfoTextView = rootView.findViewById(R.id.tv_ingredients_info);
         mIngredientsInfoTextView.setText(mIngredientsDetails);
-       // mStepsRecyclerView = rootView.findViewById(R.id.rv_steps);
         updateStepsInUI(mBakingSteps);
         return rootView;
     }
 
+    /**
+     * Updates Steps details in UI via adapter
+     * @param bakingStepsInfo
+     */
     private void updateStepsInUI(List<BakingSteps> bakingStepsInfo) {
         Log.d(LOG_TAG, "updateUI Method is called now");
         StepsContentAdapter stepsContentAdapter = new StepsContentAdapter(bakingStepsInfo,mCallback );
@@ -83,14 +80,12 @@ public class RecipeFragment extends Fragment {
         mStepsRecyclerView.setLayoutManager(layoutManager);
         mStepsRecyclerView.setNestedScrollingEnabled(false);
         mStepsRecyclerView.setAdapter(stepsContentAdapter);
-
     }
 
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
         // This makes sure that the host activity has implemented the callback interface
         // If not, it throws an exception
         try {
@@ -100,5 +95,4 @@ public class RecipeFragment extends Fragment {
                     + " must implement OnImageClickListener");
         }
     }
-
 }

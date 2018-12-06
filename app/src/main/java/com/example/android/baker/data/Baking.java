@@ -16,6 +16,7 @@ public class Baking {
 
     /**
      * Constructor to initialize the variables
+     *
      * @param bakingItemId
      * @param bakingItemName
      * @param bakingIngredientsArrayList
@@ -55,6 +56,4 @@ public class Baking {
     public String getImage() {
         return image;
     }
-
-
 }

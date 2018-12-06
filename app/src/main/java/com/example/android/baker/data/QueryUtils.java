@@ -128,7 +128,6 @@ public class QueryUtils {
         } catch (Exception e) {
             Log.e(LOG_TAG, "Problem making HttpRequest", e);
         }
-
         return extractBakingInfo(jsonResponse);
     }
 }

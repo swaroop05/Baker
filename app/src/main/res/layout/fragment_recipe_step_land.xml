@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -9,70 +8,5 @@
         android:id="@+id/video_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-<!--
-    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/cv_steps"
-        cardUseCompatPadding="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        card_view:cardCornerRadius="4dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tv_steps_title"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="#64B5F6"
-                android:gravity="center"
-                android:text="@string/instructions_title"
-                android:textAlignment="center"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/tv_steps_desc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@color/cardview_light_background"
-                android:padding="5dp"
-                tools:text="Nuttella Pie" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btn_previous_step_navigation"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="2.5dp"
-                    android:layout_marginRight="2.5dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@string/previous_step" />
-
-                <Button
-                    android:id="@+id/btn_next_step_navigation"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="2.5dp"
-                    android:layout_marginStart="2.5dp"
-                    android:layout_weight="1"
-
-                    android:gravity="center"
-                    android:text="@string/next_step" />
-
-
-            </LinearLayout>
-
-        </LinearLayout>
-    </android.support.v7.widget.CardView>-->
 
 </LinearLayout>
