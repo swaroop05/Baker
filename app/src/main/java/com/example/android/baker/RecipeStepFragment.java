@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,7 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -40,6 +42,7 @@ import butterknife.ButterKnife;
 
 import static com.example.android.baker.DetailsActivity.KEY_STEP_DESC;
 import static com.example.android.baker.DetailsActivity.KEY_STEP_ID;
+import static com.example.android.baker.DetailsActivity.KEY_STEP_RECIPE_IMAGE;
 import static com.example.android.baker.DetailsActivity.KEY_STEP_VIDEO_URL;
 import static com.example.android.baker.RecipeListFragment.KEY_INGREDIENTS_OF_SINGLE_RECIPE;
 import static com.example.android.baker.RecipeListFragment.KEY_RECIPE_ID;
@@ -55,6 +58,7 @@ public class RecipeStepFragment extends Fragment {
     private int mStepId;
     private int mRecipeId;
     private String mStepVideoUrl;
+    private String mStepImageUrl;
 
     @Nullable
     @BindView(R.id.tv_steps_desc)
@@ -67,6 +71,10 @@ public class RecipeStepFragment extends Fragment {
     @Nullable
     @BindView(R.id.btn_next_step_navigation)
     Button mNextStepBtn;
+
+    @Nullable
+    @BindView((R.id.recipe_steps_image))
+    ImageView mStepImageView;
 
     /*//@BindView(R.id.tv_steps_title)
     TextView mStepsHeader;*/
@@ -91,12 +99,14 @@ public class RecipeStepFragment extends Fragment {
             mStepVideoUrl = savedInstanceState.getString(KEY_STEP_VIDEO_URL);
             mRecipeId = savedInstanceState.getInt(KEY_RECIPE_ID);
             mStepId = savedInstanceState.getInt(KEY_STEP_ID);
+            mStepImageUrl = savedInstanceState.getString(KEY_STEP_RECIPE_IMAGE);
 
         }else {
             Bundle bundle = getArguments();
             if (bundle != null) {
                 mStepDesc = bundle.getString(KEY_STEP_DESC) ;
                 mStepVideoUrl = bundle.getString(KEY_STEP_VIDEO_URL);
+                mStepImageUrl = bundle.getString(KEY_STEP_RECIPE_IMAGE);
                 mStepId = bundle.getInt(KEY_STEP_ID, 0);
                 mRecipeId = bundle.getInt(KEY_RECIPE_ID, 0);
             }
@@ -124,6 +134,7 @@ public class RecipeStepFragment extends Fragment {
                         Bundle previousStepBundle =new Bundle();
                         previousStepBundle.putString(KEY_STEP_DESC,DetailsActivity.getBakingStepsInfo(mStepId).getBakingStepsDescription() );
                         previousStepBundle.putString(KEY_STEP_VIDEO_URL, DetailsActivity.getBakingStepsInfo(mStepId).getBakingStepsVideoUrl());
+                        previousStepBundle.putString(KEY_STEP_RECIPE_IMAGE, DetailsActivity.getBakingStepsInfo(mStepId).getBakingStepsThumbnailUrl());
                         previousStepBundle.putInt(KEY_STEP_ID, mStepId);
                         previousStepBundle.putInt(KEY_RECIPE_ID,mRecipeId);
                         //Check if thie RecipeID can be deleted since this is not used anywhere
@@ -150,6 +161,7 @@ public class RecipeStepFragment extends Fragment {
                         Bundle nextStepBundle =new Bundle();
                         nextStepBundle.putString(KEY_STEP_DESC,DetailsActivity.getBakingStepsInfo(mStepId).getBakingStepsDescription() );
                         nextStepBundle.putString(KEY_STEP_VIDEO_URL, DetailsActivity.getBakingStepsInfo(mStepId).getBakingStepsVideoUrl());
+                        nextStepBundle.putString(KEY_STEP_RECIPE_IMAGE, DetailsActivity.getBakingStepsInfo(mStepId).getBakingStepsThumbnailUrl());
                         nextStepBundle.putInt(KEY_STEP_ID, mStepId);
                         nextStepBundle.putInt(KEY_RECIPE_ID,mRecipeId);
                         //Check if thie RecipeID can be deleted since this is not used anywhere
@@ -198,10 +210,26 @@ public class RecipeStepFragment extends Fragment {
             releasePlayer();
         }
         if (!mStepVideoUrl.isEmpty() ){
+            mStepImageView.setVisibility(View.GONE);
             mPlayerView.setVisibility(View.VISIBLE);
             initializePlayer(Uri.parse(mStepVideoUrl));
-        }else{
+        }else if (!mStepImageUrl.isEmpty()){
+            if (mStepImageUrl.contains(".mp4")){
+                mStepImageView.setVisibility(View.GONE);
+                mPlayerView.setVisibility(View.VISIBLE);
+                initializePlayer(Uri.parse(mStepImageUrl));
+            }else {
+                mPlayerView.setVisibility(View.GONE);
+                mStepImageView.setVisibility(View.VISIBLE);
+                Picasso.with(getContext())
+                        .load(mStepImageUrl)
+                        .into(mStepImageView);
+            }
+
+
+        } else{
             mPlayerView.setVisibility(View.GONE);
+            mStepImageView.setVisibility(View.GONE);
         }
     }
 
@@ -295,6 +323,7 @@ public class RecipeStepFragment extends Fragment {
         outState.putString(KEY_STEP_DESC, mStepDesc);
         outState.putInt(KEY_STEP_ID, mStepId);
         outState.putString(KEY_STEP_VIDEO_URL, mStepVideoUrl);
+        outState.putString(KEY_STEP_RECIPE_IMAGE, mStepImageUrl);
         outState.putInt(KEY_RECIPE_ID, mRecipeId);
         if (mExoPlayer != null) {
             outState.putLong(SEEK_POSITION, seekPosition);

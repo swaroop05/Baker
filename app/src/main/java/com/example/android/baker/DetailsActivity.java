@@ -29,6 +29,7 @@ public class DetailsActivity extends AppCompatActivity implements StepsContentAd
     public static final String KEY_STEP_ID = "step_id";
     public static final String KEY_STEP_DESC = "step_desc";
     public static final String KEY_STEP_VIDEO_URL = "step_video_url";
+    public static final String KEY_STEP_RECIPE_IMAGE = "recipe_image_url";
     private boolean isTablet;
 
 
@@ -86,6 +87,7 @@ public class DetailsActivity extends AppCompatActivity implements StepsContentAd
         BakingSteps bakingStep = mBakingSteps.get(clickedItemIndex);
         String bakingStepDescription = bakingStep.getBakingStepsDescription();
         String bakingStepVideoUrl = bakingStep.getBakingStepsVideoUrl();
+        String bakingImageUrl = bakingStep.getBakingStepsThumbnailUrl();
         int stepId = clickedItemIndex;
         if (isTablet){
             Bundle recipeStepFragmentBundle = new Bundle();
@@ -93,6 +95,7 @@ public class DetailsActivity extends AppCompatActivity implements StepsContentAd
             recipeStepFragmentBundle.putString(KEY_STEP_VIDEO_URL, bakingStepVideoUrl);
             recipeStepFragmentBundle.putInt(KEY_STEP_ID, stepId);
             recipeStepFragmentBundle.putInt(KEY_RECIPE_ID,mRecipeId);
+            recipeStepFragmentBundle.putString(KEY_STEP_RECIPE_IMAGE,bakingImageUrl);
             RecipeStepFragment recipeStepFragment = new RecipeStepFragment();
             recipeStepFragment.setArguments(recipeStepFragmentBundle);
             recipeStepFragment.setRetainInstance(false);
@@ -105,6 +108,7 @@ public class DetailsActivity extends AppCompatActivity implements StepsContentAd
             viewRecipeStepActivityIntent.putExtra(KEY_STEP_ID, stepId);
             viewRecipeStepActivityIntent.putExtra(KEY_RECIPE_ID, mRecipeId);
             viewRecipeStepActivityIntent.putExtra(KEY_STEP_VIDEO_URL, bakingStepVideoUrl);
+            viewRecipeStepActivityIntent.putExtra(KEY_STEP_RECIPE_IMAGE, bakingImageUrl);
             startActivity(viewRecipeStepActivityIntent);
         }
 

@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import static com.example.android.baker.DetailsActivity.KEY_STEP_DESC;
 import static com.example.android.baker.DetailsActivity.KEY_STEP_ID;
+import static com.example.android.baker.DetailsActivity.KEY_STEP_RECIPE_IMAGE;
 import static com.example.android.baker.DetailsActivity.KEY_STEP_VIDEO_URL;
 import static com.example.android.baker.RecipeListFragment.KEY_RECIPE_ID;
 
@@ -22,7 +23,9 @@ public class RecipeStepActivity extends AppCompatActivity {
     private int mStepId;
     private int mRecipeId;
     private String mStepVideoUrl;
+    private String mStepImageUrl;
     public static final String KEY_RECIPE_ID ="recipe_id";
+
 
 
     @Override
@@ -43,9 +46,14 @@ public class RecipeStepActivity extends AppCompatActivity {
         if (intent.hasExtra(KEY_STEP_VIDEO_URL)) {
             mStepVideoUrl = intent.getStringExtra(KEY_STEP_VIDEO_URL);
         }
+        if (intent.hasExtra(KEY_STEP_RECIPE_IMAGE)) {
+            mStepImageUrl = intent.getStringExtra(KEY_STEP_RECIPE_IMAGE);
+        }
+
         Bundle recipeStepFragmentBundle = new Bundle();
         recipeStepFragmentBundle.putString(KEY_STEP_DESC,mStepDesc );
         recipeStepFragmentBundle.putString(KEY_STEP_VIDEO_URL, mStepVideoUrl);
+        recipeStepFragmentBundle.putString(KEY_STEP_RECIPE_IMAGE, mStepImageUrl);
         recipeStepFragmentBundle.putInt(KEY_STEP_ID, mStepId);
         recipeStepFragmentBundle.putInt(KEY_RECIPE_ID,mRecipeId);
         RecipeStepFragment recipeStepFragment = new RecipeStepFragment();
