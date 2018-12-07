@@ -279,13 +279,18 @@ public class RecipeStepFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if (Util.SDK_INT > 23) {
+            initializePlayer(Uri.parse(mStepVideoUrl));
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        if (isLandscape() && !isTablet) {
-            hideSystemUi();
-            if ((Util.SDK_INT <= 23 || mExoPlayer == null)) {
-                initializePlayer(Uri.parse(mStepVideoUrl));
-            }
+        if ((Util.SDK_INT <= 23 || mExoPlayer == null)) {
+            initializePlayer(Uri.parse(mStepVideoUrl));
         }
     }
 
