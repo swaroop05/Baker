@@ -69,6 +69,8 @@ public class RecipeStepFragment extends Fragment {
     private SimpleExoPlayer mExoPlayer;
     private long seekPosition = -1;
     private boolean isTablet;
+    private boolean startAutoPlay;
+    private static final String KEY_AUTO_PLAY = "auto_play";
 
     /**
      * returns Recipefragment after setting bundle to it as arugments
@@ -93,9 +95,11 @@ public class RecipeStepFragment extends Fragment {
             mRecipeId = savedInstanceState.getInt(KEY_RECIPE_ID);
             mStepId = savedInstanceState.getInt(KEY_STEP_ID);
             mStepImageUrl = savedInstanceState.getString(KEY_STEP_RECIPE_IMAGE);
+            startAutoPlay = savedInstanceState.getBoolean(KEY_AUTO_PLAY);
 
         } else {
             Bundle bundle = getArguments();
+            startAutoPlay = true;
             if (bundle != null) {
                 mStepDesc = bundle.getString(KEY_STEP_DESC);
                 mStepVideoUrl = bundle.getString(KEY_STEP_VIDEO_URL);
@@ -236,7 +240,7 @@ public class RecipeStepFragment extends Fragment {
             LoadControl loadControl = new DefaultLoadControl();
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(new DefaultRenderersFactory(getContext()), trackSelector, loadControl);
             mPlayerView.setPlayer(mExoPlayer);
-            mExoPlayer.setPlayWhenReady(true);
+            mExoPlayer.setPlayWhenReady(startAutoPlay);
             if (seekPosition != -1) {
                 mExoPlayer.seekTo(seekPosition);
             }
@@ -302,6 +306,7 @@ public class RecipeStepFragment extends Fragment {
         super.onPause();
         if (mExoPlayer != null) {
             seekPosition = mExoPlayer.getCurrentPosition();
+            startAutoPlay = mExoPlayer.getPlayWhenReady();
             if (Util.SDK_INT <= 23) {
                 releasePlayer();
             }
@@ -329,6 +334,7 @@ public class RecipeStepFragment extends Fragment {
         outState.putString(KEY_STEP_RECIPE_IMAGE, mStepImageUrl);
         outState.putInt(KEY_RECIPE_ID, mRecipeId);
         outState.putLong(SEEK_POSITION, seekPosition);
+        outState.putBoolean(KEY_AUTO_PLAY, startAutoPlay);
 
     }
 
