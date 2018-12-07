@@ -7,19 +7,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.example.android.baker.data.Baking;
 import com.example.android.baker.data.BakingIngredients;
-import com.example.android.baker.data.BakingSteps;
 import com.example.android.baker.data.QueryUtils;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static com.example.android.baker.RecipeListFragment.getAllIngredientsDetails;
 
 /**
  * Implementation of App Widget functionality.
@@ -76,11 +71,10 @@ public class BakerWidgetProvider extends AppWidgetProvider {
             Bundle bundle = new Bundle();
             bundle.putInt(RECIPE_INDEX, getCurrentRecipeIndex());
             serviceIntent.putExtra(RECIPE_BUNDLE, bundle);
-            // Construct the RemoteViews object
+            // Construct the RemoteViews object for ingredient widget list
             views.setRemoteAdapter(R.id.baker_widget_ingredients_list, serviceIntent);
-           // views.setTextViewText(R.id.baker_widget_recipe_ingredients, getAllIngredientsDetails(allBakingRecipes.get(getCurrentRecipeIndex())));
-        }
 
+        }
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
@@ -179,11 +173,9 @@ public class BakerWidgetProvider extends AppWidgetProvider {
             Bundle bundle = new Bundle();
             bundle.putInt(RECIPE_INDEX, getCurrentRecipeIndex());
             serviceIntent.putExtra(RECIPE_BUNDLE, bundle);
-            // Construct the RemoteViews object
+            // Construct the RemoteViews object for ingredient widget list view
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baker_widget_provider);
             views.setRemoteAdapter(R.id.baker_widget_ingredients_list, serviceIntent);
-
-           // views.setTextViewText(R.id.baker_widget_recipe_ingredients, getAllIngredientsDetails(bakingRecipesInfo.get(getCurrentRecipeIndex())));
             widgetManager.updateAppWidget(widgetID, views);
         }
     }

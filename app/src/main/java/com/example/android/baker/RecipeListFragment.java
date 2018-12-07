@@ -7,7 +7,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -41,7 +40,6 @@ public class RecipeListFragment extends Fragment implements BakingRecipeNamesAda
     public static final String KEY_INGREDIENTS_OF_SINGLE_RECIPE = "singleRecipeIngredients";
     public static final String KEY_RECIPE_ID = "recipe_id";
     private static final String LOG_TAG = RecipeListFragment.class.getName();
-    private static Parcelable STATE = null;
     private static List<Baking> BAKING_INFO_MASTER;
     @BindView(R.id.empty_view)
     TextView mEmptyStateTextView;
@@ -73,7 +71,7 @@ public class RecipeListFragment extends Fragment implements BakingRecipeNamesAda
         return allIngredientsDetails;
     }
 
-    public static ArrayList<BakingIngredients> getIngredientDetailsAsList(Baking singleBakingRecipeInfo){
+    public static ArrayList<BakingIngredients> getIngredientDetailsAsList(Baking singleBakingRecipeInfo) {
         return singleBakingRecipeInfo.getBakingIngredientsArrayList();
     }
 
@@ -87,7 +85,6 @@ public class RecipeListFragment extends Fragment implements BakingRecipeNamesAda
         List<BakingSteps> bakingStepsList = BAKING_INFO_MASTER.get(recipeId).getBakingStepsArrayList();
         return bakingStepsList;
     }
-
 
 
     @Nullable
@@ -113,9 +110,7 @@ public class RecipeListFragment extends Fragment implements BakingRecipeNamesAda
     public void onRecipeNameItemClick(int clickedItemIndex) {
         Baking singleRecipeDetails = mBakingInfos.get(clickedItemIndex);
         String bakingRecipeName = singleRecipeDetails.getBakingItemName();
-        String recipeId = singleRecipeDetails.getBakingItemId();
         String ingredientsDetails = getAllIngredientsDetails(singleRecipeDetails);
-        List<BakingSteps> bakingStepsArrayList = singleRecipeDetails.getBakingStepsArrayList();
         Intent detailsActivityIntent = new Intent(getContext(), DetailsActivity.class);
         detailsActivityIntent.putExtra(KEY_RECIPE_NAME, bakingRecipeName);
         detailsActivityIntent.putExtra(KEY_INGREDIENTS_OF_SINGLE_RECIPE, ingredientsDetails);

@@ -321,7 +321,6 @@ public class RecipeStepFragment extends Fragment {
             if (Util.SDK_INT > 23) {
                 releasePlayer();
             }
-
         }
     }
 
@@ -335,7 +334,6 @@ public class RecipeStepFragment extends Fragment {
         outState.putInt(KEY_RECIPE_ID, mRecipeId);
         outState.putLong(SEEK_POSITION, seekPosition);
         outState.putBoolean(KEY_AUTO_PLAY, startAutoPlay);
-
     }
 
     /**

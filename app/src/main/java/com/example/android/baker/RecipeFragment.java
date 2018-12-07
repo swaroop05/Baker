@@ -1,7 +1,6 @@
 package com.example.android.baker;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -43,6 +42,7 @@ public class RecipeFragment extends Fragment {
     private static List<BakingSteps> sBakingSteps;
     private static int mRecipeId;
     StepsContentAdapter.StepsItemClickListener mCallback;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -56,7 +56,7 @@ public class RecipeFragment extends Fragment {
         } else {
             Bundle bundle = getArguments();
             if (bundle != null) {
-                mRecipeName = bundle.getString(KEY_RECIPE_NAME) ;
+                mRecipeName = bundle.getString(KEY_RECIPE_NAME);
                 mIngredientsDetails = bundle.getString(KEY_INGREDIENTS_OF_SINGLE_RECIPE);
                 mRecipeId = bundle.getInt(KEY_RECIPE_ID, 0);
             }
@@ -71,11 +71,12 @@ public class RecipeFragment extends Fragment {
 
     /**
      * Updates Steps details in UI via adapter
+     *
      * @param bakingStepsInfo
      */
     private void updateStepsInUI(List<BakingSteps> bakingStepsInfo) {
         Log.d(LOG_TAG, "updateUI Method is called now");
-        StepsContentAdapter stepsContentAdapter = new StepsContentAdapter(bakingStepsInfo,mCallback );
+        StepsContentAdapter stepsContentAdapter = new StepsContentAdapter(bakingStepsInfo, mCallback);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mStepsRecyclerView.setLayoutManager(layoutManager);
         mStepsRecyclerView.setNestedScrollingEnabled(false);

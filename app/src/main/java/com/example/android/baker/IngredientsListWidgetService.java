@@ -10,6 +10,7 @@ import android.widget.RemoteViewsService;
 
 public class IngredientsListWidgetService extends RemoteViewsService {
     private static final String LOG_TAG = IngredientsListWidgetService.class.getName();
+
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         Log.d(LOG_TAG, "IngredientsListWidgetService Class is called now");

@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
 
     <TextView
         android:id="@+id/recipe_widget_ingredient"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:fontFamily="Roboto-Condensed"
-        android:textSize="12sp"
+        android:layout_marginBottom="6dp"
+        android:layout_marginLeft="12dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="6dp"
-        android:layout_marginBottom="6dp"
         android:layout_weight="0.8"
-        android:layout_marginLeft="12dp"
-        tools:text="Salt"/>
+        android:textColor="@android:color/black"
+        android:textSize="12sp"
+        tools:text="Salt" />
 
     <TextView
         android:id="@+id/recipe_widget_ingredient_measure_and_qty"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:fontFamily="Roboto-Condensed"
-        android:textSize="12sp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginTop="6dp"
         android:layout_marginBottom="6dp"
-        android:layout_weight="0.2"
+        android:layout_marginEnd="12dp"
         android:layout_marginRight="12dp"
-        tools:text="1 TSP"/>
+        android:layout_marginTop="6dp"
+        android:layout_weight="0.2"
+        android:textColor="@android:color/black"
+        android:textSize="12sp"
+        tools:text="1 TSP" />
 
 </LinearLayout>
