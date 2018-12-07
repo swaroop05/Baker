@@ -73,6 +73,10 @@ public class RecipeListFragment extends Fragment implements BakingRecipeNamesAda
         return allIngredientsDetails;
     }
 
+    public static ArrayList<BakingIngredients> getIngredientDetailsAsList(Baking singleBakingRecipeInfo){
+        return singleBakingRecipeInfo.getBakingIngredientsArrayList();
+    }
+
     /**
      * static method to return Step details of given recipe based on recipe id.
      *
@@ -83,6 +87,8 @@ public class RecipeListFragment extends Fragment implements BakingRecipeNamesAda
         List<BakingSteps> bakingStepsList = BAKING_INFO_MASTER.get(recipeId).getBakingStepsArrayList();
         return bakingStepsList;
     }
+
+
 
     @Nullable
     @Override

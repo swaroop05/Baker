@@ -56,14 +56,12 @@
             android:layout_marginTop="6dp"
             android:layout_marginBottom="6dp"
             android:textColor="@android:color/black" />
-        <TextView
-            android:id="@+id/baker_widget_recipe_ingredients"
+        <ListView
+            android:id="@+id/baker_widget_ingredients_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp"
-            android:textColor="@android:color/black"
-            tools:text="- 2 Cups of Graham cracker crumbs" />
+            android:layout_height="wrap_content">
+        </ListView>
+
     </LinearLayout>
+
 </LinearLayout>

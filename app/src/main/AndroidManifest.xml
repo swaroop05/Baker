@@ -41,6 +41,9 @@
         </receiver>
 
         <service android:name=".BakerWidgetService" />
+        <service android:name=".IngredientsListWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+
     </application>
 
 </manifest>

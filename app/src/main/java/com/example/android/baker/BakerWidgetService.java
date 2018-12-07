@@ -85,6 +85,6 @@ public class BakerWidgetService extends IntentService {
         BakerWidgetProvider.updateAllWidgets(this, appWidgetManager, appWidgetIds);
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.recipe_widget_holder);
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.baker_widget_recipe_name);
-        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.baker_widget_recipe_ingredients);
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.baker_widget_ingredients_list);
     }
 }

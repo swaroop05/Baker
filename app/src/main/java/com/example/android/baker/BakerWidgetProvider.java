@@ -6,12 +6,17 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.example.android.baker.data.Baking;
+import com.example.android.baker.data.BakingIngredients;
+import com.example.android.baker.data.BakingSteps;
 import com.example.android.baker.data.QueryUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.android.baker.RecipeListFragment.getAllIngredientsDetails;
@@ -25,6 +30,9 @@ public class BakerWidgetProvider extends AppWidgetProvider {
     public static List<Baking> allBakingRecipes;
     private static int currentRecipeIndex;
     private static int currentService = 0;
+    public static final String RECIPES = "recipe";
+    public static final String RECIPE_BUNDLE = "recipeBundle";
+    public static final String RECIPE_INDEX = "recipeIndex";
 
     public static int getCurrentRecipeIndex() {
         return currentRecipeIndex;
@@ -61,10 +69,16 @@ public class BakerWidgetProvider extends AppWidgetProvider {
 
 
         if (allBakingRecipes == null) {
-            new LoadBakingRecipesTask(views, appWidgetManager, appWidgetId).execute(context);
+            new LoadBakingRecipesTask(context, views, appWidgetManager, appWidgetId).execute(context);
         } else {
             views.setTextViewText(R.id.baker_widget_recipe_name, allBakingRecipes.get(getCurrentRecipeIndex()).getBakingItemName());
-            views.setTextViewText(R.id.baker_widget_recipe_ingredients, getAllIngredientsDetails(allBakingRecipes.get(getCurrentRecipeIndex())));
+            Intent serviceIntent = new Intent(context, IngredientsListWidgetService.class);
+            Bundle bundle = new Bundle();
+            bundle.putInt(RECIPE_INDEX, getCurrentRecipeIndex());
+            serviceIntent.putExtra(RECIPE_BUNDLE, bundle);
+            // Construct the RemoteViews object
+            views.setRemoteAdapter(R.id.baker_widget_ingredients_list, serviceIntent);
+           // views.setTextViewText(R.id.baker_widget_recipe_ingredients, getAllIngredientsDetails(allBakingRecipes.get(getCurrentRecipeIndex())));
         }
 
         // Instruct the widget manager to update the widget
@@ -97,18 +111,31 @@ public class BakerWidgetProvider extends AppWidgetProvider {
     }
 
     /**
+     * static method to return Step details of given recipe based on recipe id.
+     *
+     * @param recipeId
+     * @return
+     */
+    public static List<BakingIngredients> getIngredientsOfRecipe(int recipeId) {
+        List<BakingIngredients> bakingStepsList = allBakingRecipes.get(recipeId).getBakingIngredientsArrayList();
+        return bakingStepsList;
+    }
+
+    /**
      * Async task to load the baking recipes and update the Widget textview
      */
     public static class LoadBakingRecipesTask extends AsyncTask<Context, Void, List<Baking>> {
         private RemoteViews views;
         private int widgetID;
         private AppWidgetManager widgetManager;
+        private Context context;
 
-        public LoadBakingRecipesTask(RemoteViews views, AppWidgetManager appWidgetManager,
+        public LoadBakingRecipesTask(Context appContext, RemoteViews views, AppWidgetManager appWidgetManager,
                                      int appWidgetId) {
             this.views = views;
             this.widgetID = appWidgetId;
             this.widgetManager = appWidgetManager;
+            this.context = appContext;
         }
 
         /**
@@ -148,7 +175,15 @@ public class BakerWidgetProvider extends AppWidgetProvider {
             Log.d(LOG_TAG, "LoadBakingRecipesTask Class -  onPostExecute Method is called now");
             allBakingRecipes = bakingRecipesInfo;
             views.setTextViewText(R.id.baker_widget_recipe_name, bakingRecipesInfo.get(getCurrentRecipeIndex()).getBakingItemName());
-            views.setTextViewText(R.id.baker_widget_recipe_ingredients, getAllIngredientsDetails(bakingRecipesInfo.get(getCurrentRecipeIndex())));
+            Intent serviceIntent = new Intent(context, IngredientsListWidgetService.class);
+            Bundle bundle = new Bundle();
+            bundle.putInt(RECIPE_INDEX, getCurrentRecipeIndex());
+            serviceIntent.putExtra(RECIPE_BUNDLE, bundle);
+            // Construct the RemoteViews object
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baker_widget_provider);
+            views.setRemoteAdapter(R.id.baker_widget_ingredients_list, serviceIntent);
+
+           // views.setTextViewText(R.id.baker_widget_recipe_ingredients, getAllIngredientsDetails(bakingRecipesInfo.get(getCurrentRecipeIndex())));
             widgetManager.updateAppWidget(widgetID, views);
         }
     }
