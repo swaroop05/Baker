@@ -302,7 +302,9 @@ public class RecipeStepFragment extends Fragment {
         super.onPause();
         if (mExoPlayer != null) {
             seekPosition = mExoPlayer.getCurrentPosition();
-
+            if (Util.SDK_INT <= 23) {
+                releasePlayer();
+            }
         }
     }
 
@@ -311,8 +313,10 @@ public class RecipeStepFragment extends Fragment {
         super.onStop();
         if (mExoPlayer != null) {
             seekPosition = mExoPlayer.getCurrentPosition();
-            mExoPlayer.release();
-            mExoPlayer = null;
+            if (Util.SDK_INT > 23) {
+                releasePlayer();
+            }
+
         }
     }
 
@@ -324,9 +328,7 @@ public class RecipeStepFragment extends Fragment {
         outState.putString(KEY_STEP_VIDEO_URL, mStepVideoUrl);
         outState.putString(KEY_STEP_RECIPE_IMAGE, mStepImageUrl);
         outState.putInt(KEY_RECIPE_ID, mRecipeId);
-        if (mExoPlayer != null) {
-            outState.putLong(SEEK_POSITION, seekPosition);
-        }
+        outState.putLong(SEEK_POSITION, seekPosition);
 
     }
 
