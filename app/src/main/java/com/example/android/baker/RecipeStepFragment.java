@@ -289,6 +289,9 @@ public class RecipeStepFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        if (isLandscape() && !isTablet) {
+            hideSystemUi();
+        }
         if ((Util.SDK_INT <= 23 || mExoPlayer == null)) {
             initializePlayer(Uri.parse(mStepVideoUrl));
         }
