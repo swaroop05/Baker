@@ -169,12 +169,13 @@ public class BakerWidgetProvider extends AppWidgetProvider {
             Log.d(LOG_TAG, "LoadBakingRecipesTask Class -  onPostExecute Method is called now");
             allBakingRecipes = bakingRecipesInfo;
             views.setTextViewText(R.id.baker_widget_recipe_name, bakingRecipesInfo.get(getCurrentRecipeIndex()).getBakingItemName());
+            Log.d(LOG_TAG, "LoadBakingRecipesTask Class -  Setting the recipe name text to remoteView");
             Intent serviceIntent = new Intent(context, IngredientsListWidgetService.class);
             Bundle bundle = new Bundle();
             bundle.putInt(RECIPE_INDEX, getCurrentRecipeIndex());
             serviceIntent.putExtra(RECIPE_BUNDLE, bundle);
             // Construct the RemoteViews object for ingredient widget list view
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baker_widget_provider);
+            
             views.setRemoteAdapter(R.id.baker_widget_ingredients_list, serviceIntent);
             widgetManager.updateAppWidget(widgetID, views);
         }
